@@ -1,6 +1,7 @@
 package com.example.todolist.view
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,10 +29,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,10 +44,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.todolist.componentes.CaixaDeTexto
 import com.example.todolist.model.Tarefa
+import com.example.todolist.repository.TarefasRepository
 import com.example.todolist.ui.theme.Purple40
 import com.example.todolist.ui.theme.RB_Green
 import com.example.todolist.ui.theme.RB_Red
 import com.example.todolist.ui.theme.RB_Yellow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,6 +58,11 @@ import com.example.todolist.ui.theme.RB_Yellow
 fun AddTarefa(
     navController: NavController
 ) {
+
+    val scope = rememberCoroutineScope()
+    val tarefasRepository = TarefasRepository()
+    val context = LocalContext.current
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -161,7 +172,38 @@ fun AddTarefa(
                     .padding(20.dp)
                     .height(60.dp),
                 colors = ButtonDefaults.buttonColors(Purple40),
-                onClick = {}
+                onClick = {
+                    var mensagem = true
+
+                    scope.launch(Dispatchers.IO) {
+                        if (tituloTarefa.isEmpty()){
+                            mensagem = false
+                        }else if (prioridade == "baixa"){
+                            mensagem = true
+                            tarefasRepository.salvarTarefa(tituloTarefa, descricaoTarefa, 1)
+                        } else if (prioridade == "media"){
+                            mensagem = true
+                            tarefasRepository.salvarTarefa(tituloTarefa, descricaoTarefa, 2)
+                        } else if (prioridade == "alta"){
+                            mensagem = true
+                            tarefasRepository.salvarTarefa(tituloTarefa, descricaoTarefa, 3)
+                        }
+                    }
+
+                    scope.launch(Dispatchers.Main) {
+                        if (mensagem) {
+                            Toast.makeText(
+                                context,
+                                "Tarefa salva com sucesso!",
+                                Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Título da tarefa é obrigatório!",
+                                Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
             ) {
                 Text("Adicionar")
             }
