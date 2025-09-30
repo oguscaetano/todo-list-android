@@ -196,6 +196,7 @@ fun AddTarefa(
                                 context,
                                 "Tarefa salva com sucesso!",
                                 Toast.LENGTH_SHORT).show()
+                            navController.navigate("listaTarefas")
                         } else {
                             Toast.makeText(
                                 context,
