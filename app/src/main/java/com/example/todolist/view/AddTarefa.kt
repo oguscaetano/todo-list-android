@@ -11,14 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
@@ -37,13 +32,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.todolist.componentes.CaixaDeTexto
-import com.example.todolist.model.Tarefa
 import com.example.todolist.repository.TarefasRepository
 import com.example.todolist.ui.theme.Purple40
 import com.example.todolist.ui.theme.RB_Green
@@ -180,13 +172,13 @@ fun AddTarefa(
                             mensagem = false
                         }else if (prioridade == "baixa"){
                             mensagem = true
-                            tarefasRepository.salvarTarefa(tituloTarefa, descricaoTarefa, 1)
+                            tarefasRepository.salvarTarefa(tituloTarefa, descricaoTarefa, 0)
                         } else if (prioridade == "media"){
                             mensagem = true
-                            tarefasRepository.salvarTarefa(tituloTarefa, descricaoTarefa, 2)
+                            tarefasRepository.salvarTarefa(tituloTarefa, descricaoTarefa, 1)
                         } else if (prioridade == "alta"){
                             mensagem = true
-                            tarefasRepository.salvarTarefa(tituloTarefa, descricaoTarefa, 3)
+                            tarefasRepository.salvarTarefa(tituloTarefa, descricaoTarefa, 2)
                         }
                     }
 
@@ -212,8 +204,8 @@ fun AddTarefa(
     }
 }
 
-@Preview
-@Composable
-private fun AddTarefaPreview() {
-    AddTarefa(navController = rememberNavController())
-}
+//@Preview
+//@Composable
+//private fun AddTarefaPreview() {
+//    AddTarefa(navController = rememberNavController())
+//}

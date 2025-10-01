@@ -1,6 +1,11 @@
 package com.example.todolist.datasource
 
+import com.example.todolist.model.Tarefa
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class DataSource() {
 
@@ -18,4 +23,25 @@ class DataSource() {
             .addOnCompleteListener { }
             .addOnFailureListener { }
     }
+
+    private val _todasTarefas = MutableStateFlow<MutableList<Tarefa>>(mutableListOf())
+    private val todasTarefas: StateFlow<MutableList<Tarefa>> = _todasTarefas
+
+
+    fun listarTarefas(): Flow<MutableList<Tarefa>> {
+
+        val listaTarefas: MutableList<Tarefa> = mutableListOf()
+
+        db.collection("tarefas").orderBy("prioridade", Query.Direction.DESCENDING).get().addOnCompleteListener { querySnapshot ->
+            if (querySnapshot.isSuccessful) {
+                for (document in querySnapshot.result) {
+                    val tarefa = document.toObject(Tarefa::class.java)
+                    listaTarefas.add(tarefa)
+                    _todasTarefas.value = listaTarefas
+                }
+            }
+        }
+        return todasTarefas
+    }
+
 }
